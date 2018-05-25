@@ -22,29 +22,31 @@ public class LoginTest extends BaseScript {
     // Constants for web driver continuous search method
     private static final int FIND_INTERVAL_MILLISECONDS = 150;
     private static final int FIND_REPEATS = 7;
-    private static WebDriver driver;
 
     public static void main(String[] args) {
-        openPage();
-        loginIn();
-        logout();
+        // Getting driver
+        WebDriver driver = getDriver();
+
+        openAdminPage(driver);
+        loginInAdminPage(driver);
+        logout(driver);
+
+        driver.quit();
     }
 
     /*
-     * Navigate to the Admin login page
+     * Task 1: Navigate to the Admin login page
      */
-    private static void openPage() {
-        driver = getDriver();
+    protected static void openAdminPage(WebDriver driver) {
         String openUrl = Properties.getBaseAdminUrl();
         driver.get(openUrl);
     }
 
     /*
-     * Perform login to the Admin page
+     * Task 2: Perform login to the Admin page
      */
-    private static void loginIn() {
+    protected static void loginInAdminPage(WebDriver driver) {
         // Filling the login field
-
         WebElement loginField = null;
         try {
             loginField = continuousFindWebElement(
@@ -66,9 +68,9 @@ public class LoginTest extends BaseScript {
     }
 
     /*
-     * Perform logout from the Admin page
+     * Task 3: Perform logout from the Admin page
      */
-    private static void logout() {
+    protected static void logout(WebDriver driver) {
         try {
             WebElement menuElement = continuousFindWebElement(
                     () -> driver.findElement(By.className(USER_MENU)), FIND_INTERVAL_MILLISECONDS, FIND_REPEATS
