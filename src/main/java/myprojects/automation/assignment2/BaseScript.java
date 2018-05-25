@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.net.URL;
@@ -27,15 +28,7 @@ public abstract class BaseScript {
      * @return New instance of {@link WebDriver} object.
      */
     public static WebDriver getDriver() {
-        try {
-            URL chromeUrl = BaseScript.class.getClassLoader().getResource("chromedriver");
-            System.setProperty("webdriver.chrome.driver", chromeUrl.getPath());
-
-            URL firefoxUrl = BaseScript.class.getClassLoader().getResource("geckodriver");
-            System.setProperty("webdriver.firefox.driver", firefoxUrl.getPath());
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        registerDrivers();
 
         WebDriver driver;
         switch (Properties.getBrowser()) {
@@ -45,11 +38,45 @@ public abstract class BaseScript {
             case BrowserType.FIREFOX:
                 driver = new FirefoxDriver();
                 break;
+            case BrowserType.IE:
+                driver = new InternetExplorerDriver();
+                break;
             default:
                 throw new UnsupportedOperationException("Method doesn't return WebDriver instance");
         }
 
         return driver;
+    }
+
+    /*
+     * Perform registering web driver depending on current OS
+     * Default is Mac OS
+     * Secondary supported is MS Windows
+     */
+    private static void registerDrivers() {
+        String driverChrome = "chromedriver";
+        String driverFirefox = "geckodriver";
+        String driverIE = "IEDriverServer.exe";
+        String currentOS = System.getProperty("os.name");
+        if (logMode) {
+            logger.info(String.format("Current OS: %s", currentOS));
+        }
+        if (currentOS.toLowerCase().contains("windows")) {
+            driverChrome+= ".exe";
+            driverFirefox+= ".exe";
+        }
+        try {
+            URL chromeUrl = BaseScript.class.getClassLoader().getResource(driverChrome);
+            System.setProperty("webdriver.chrome.driver", chromeUrl.getPath());
+
+            URL firefoxUrl = BaseScript.class.getClassLoader().getResource(driverFirefox);
+            System.setProperty("webdriver.firefox.driver", firefoxUrl.getPath());
+
+            URL IEUrl = BaseScript.class.getClassLoader().getResource(driverIE);
+            System.setProperty("webdriver.ie.driver", IEUrl.getPath());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
