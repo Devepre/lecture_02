@@ -9,6 +9,8 @@ public class Properties {
     private static final String DEFAULT_BASE_URL = "http://prestashop-automation.qatestlab.com.ua/";
     private static final String DEFAULT_BASE_ADMIN_URL = "http://prestashop-automation.qatestlab.com.ua/admin147ajyvk0/";
     private static final String DEFAULT_BROWSER = BrowserType.CHROME;
+    private static final String DEFAULT_LOGIN = "webinar.test@gmail.com";
+    private static final String DEFAULT_PASSWORD = "Xcg7299bnSmMuRLp9ITw";
 
     /**
      *
@@ -32,6 +34,22 @@ public class Properties {
      */
     public static String getBrowser() {
         return System.getProperty(EnvironmentVariables.BROWSER.toString(), DEFAULT_BROWSER);
+    }
+
+    /**
+     *
+     * @return The login of website backend admin panel.
+     */
+    public static String getLogin() {
+        return DEFAULT_LOGIN;
+    }
+
+    /**
+     *
+     * @return The password of website backend admin panel.
+     */
+    public static String getPassword() {
+        return DEFAULT_PASSWORD;
     }
 
 }
