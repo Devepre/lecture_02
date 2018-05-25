@@ -18,7 +18,9 @@ import java.util.logging.Logger;
  * Base script functionality, can be used for all Selenium scripts.
  */
 public abstract class BaseScript {
-    private static final Logger logger = Logger.getLogger(BaseScript.class.getName());
+    public static final Logger logger = Logger.getLogger(BaseScript.class.getName());
+    // Check it true if need logging
+    private static boolean logMode = false;
 
     /**
      *
@@ -56,15 +58,28 @@ public abstract class BaseScript {
     public static WebElement continuousFindWebElement(Callable<WebElement> func, long intervalMilliseconds, long repeats) throws Exception {
         WebElement foundElement;
         if (repeats == 0) {
+            if (logMode) {
+                logger.info("Couldn't find element");
+            }
             throw new NotFoundException();
         }
         try {
             foundElement = func.call();
         } catch (NoSuchElementException e) {
-            logger.info(String.format("Unable to find web element. Tries left: %d", repeats));
-            TimeUnit.MILLISECONDS.sleep(intervalMilliseconds);
+            if (logMode) {
+                logger.info(String.format("Unable to find web element. Tries left: %d", repeats));
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(intervalMilliseconds);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             foundElement = continuousFindWebElement(func, intervalMilliseconds, --repeats);
         }
         return foundElement;
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }
